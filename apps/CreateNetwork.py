@@ -202,8 +202,14 @@ def GetInteractionMatrix( interactionMatrix = None, interactionMatrixFile = None
         print( f"Read Interaction Matrix {datetime.now()}", flush=True )
 
     if interactionMatrix is None :
-        # Set DataFrame index to column 0
-        iMatrix = read_csv( interactionMatrixFile, index_col = 0 )
+        if '.csv' in interactionMatrixFile[-4:] :
+            # Set DataFrame column 0 to index
+            iMatrix = read_csv( interactionMatrixFile, index_col = 0 )
+        elif '.feather' in interactionMatrixFile[-8:] :
+            iMatrix = read_feather( interactionMatrixFile )
+        elif '.gz' in interactionMatrixFile[-3:] or \
+             '.xz' in interactionMatrixFile[-3:]:
+            iMatrix = read_pickle( interactionMatrixFile )
     else :
         iMatrix = interactionMatrix
 

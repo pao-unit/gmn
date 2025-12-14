@@ -35,8 +35,18 @@ def main():
 
             networkDict[ fileName ] = [ n for n in Graph.nodes ]
 
+    # DataFrame() must have equal number of rows for each column
+    N = max( [len(nodes) for nodes in networkDict.values() ] )
+
+    print( f'Max number of nodes is {N}' )
+    
     # Create DataFrame
-    df = DataFrame( networkDict )
+    df = DataFrame( columns = networkDict.keys(),
+                    index = [n for n in range( N )] )
+
+    for name, nodes in networkDict.items() :
+        for i,node in zip( range(len(nodes)), nodes ) :
+            df.loc[ i, name ] = node
 
     if args.DEBUG :
         print( df )
