@@ -2,6 +2,8 @@
 
 # Community modules
 import matplotlib.pyplot as plt
+from   numpy  import array
+from   pandas import to_datetime
 
 # Local modules
 from pyEDM import ComputeError
@@ -56,7 +58,28 @@ def Plot( self ):
 
     # First column [:, 0] is PRESUMED to be time vector
     timeData = data.iloc   [:, 0]
-    timeGMN  = gmnData.iloc[:, 0].to_numpy( dtype = float ) # pyplot
+    timeGMN  = gmnData.iloc[:, 0]
+
+    # if time Series are strings try to convert to pandas Timestamp
+    if isinstance( timeData[0], str ) :
+        try :
+            td = to_datetime( timeData )
+            timeData = td
+        except :
+            pass
+
+    if isinstance( timeGMN[0], str ) :
+        try :
+            tg = to_datetime( timeGMN )
+            timeGMN = tg
+        except :
+            pass
+
+    # If both time Series are still string, convert to integer sequence
+    if isinstance( timeData[0], str ) and isinstance( timeGMN[0],  str ):
+        # convert to sequental integer
+        timeData = array( [ i for i in range( data.shape[0] ) ] )
+        timeGMN  = array( [ i for i in range( gmnData.shape[0] ) ] )
 
     if "generate" in parameters.mode.lower() :
         timeLib = timeData [ range( parameters.predictionStart ) ]
