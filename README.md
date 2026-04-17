@@ -13,7 +13,7 @@ GMN is developed at the [Biological Nonlinear Dynamics Data Science Unit, OIST](
 
 ---
 ## Documentation
-[GMN documentation](https://nonlineardynamicsdsu.github.io/gmn/).
+[GMN documentation](https://pao-unit.github.io/gmn/).
 
 ---
 ## Usage
