@@ -23,9 +23,9 @@ classifiers = [
   "Operating System :: OS Independent",
 ]
 [project.urls]
-"Homepage"      = "https://github.com/NonlinearDynamicsDSU/gmn"
-"Documentation" = "https://nonlineardynamicsdsu.github.io/gmn/"
-"Issues"        = "https://github.com/NonlinearDynamicsDSU/gmn/issues"
+"Homepage"      = "https://github.com/pao-unit/gmn"
+"Documentation" = "https://pao-unit.github.io/gmn/"
+"Issues"        = "https://github.com/pao-unit/gmn/issues"
 [tool.pdm.version]
 source = "file"
 path   = "gmn/__init__.py"
