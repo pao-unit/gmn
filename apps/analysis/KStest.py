@@ -17,6 +17,13 @@ def KStest( x, y, xName = '', yName = '', verbose = False ):
 
     If p-value <= α null hypothesis is rejected
     if p-value > α, null hypothesis is not rejected.
+
+    A small p-value (typically < 0.05) rejects the null hypothesis (H0)
+    that the samples come from the same distribution suggesting they are
+    different. A large p-value (>= 0.05) fails to reject H0, indicating
+    insufficient evidence to say they're different. The p-value answers:
+    "If the populations were identical, what's the chance of seeing data
+    this different?"
     '''
     KS = kstest( x, # 1-D array of observations
                  y, # 1-D array of observations -> two sided test ks_2samp()

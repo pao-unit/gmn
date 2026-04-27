@@ -15,6 +15,7 @@ from   numpy  import linspace, quantile
 from   pandas import DataFrame
 
 from   pyEDM import CCM, Simplex, ComputeError, PredictNonlinear
+from   pyEDM import __version__ as pyEDM_version
 from   sklearn.linear_model      import LinearRegression
 from   sklearn.feature_selection import mutual_info_regression as MI
 from   statsmodels.distributions.empirical_distribution import ECDF
@@ -424,19 +425,43 @@ def InteractFunc( crossColumns, data, args ):
         libMax   = data.shape[0] - abs( args.tau ) * args.E
         libSizes = [ libMin, libMax ]
 
-        cmap = CCM( dataFrame       = data,
-                    E               = args.E,
-                    Tp              = args.Tp,
-                    knn             = 0,
-                    tau             = -1,
-                    sample          = args.sample,
-                    libSizes        = libSizes,
-                    exclusionRadius = args.exclusionRadius,
-                    columns         = column,
-                    target          = target,
-                    embedded        = False,
-                    verbose         = False,
-                    showPlot        = False )
+        # pyEDM 2.5.0 refactored CCM : CCM_Matrix would be better here.
+        # If pyEDM 2.5.0 or greater, use legacy = True for 2.4.0 CCM
+        CCM_version_ = [int(_) for _ in pyEDM_version.split('.')]
+        if CCM_version_[0] != 2:
+            raise RuntimeError('pyEDM version 2 required for CCM')
+
+        if CCM_version_[1] < 5 :
+            # Calling < 2.5.0 CCM
+            cmap = CCM( dataFrame       = data,
+                        E               = args.E,
+                        Tp              = args.Tp,
+                        knn             = 0,
+                        tau             = -1,
+                        sample          = args.sample,
+                        libSizes        = libSizes,
+                        exclusionRadius = args.exclusionRadius,
+                        columns         = column,
+                        target          = target,
+                        embedded        = False,
+                        verbose         = False,
+                        showPlot        = False )
+        else:
+            # Calling >= 2.5.0 with legacy = True
+            cmap = CCM( dataFrame       = data,
+                        E               = args.E,
+                        Tp              = args.Tp,
+                        knn             = 0,
+                        tau             = -1,
+                        sample          = args.sample,
+                        libSizes        = libSizes,
+                        exclusionRadius = args.exclusionRadius,
+                        columns         = column,
+                        target          = target,
+                        embedded        = False,
+                        verbose         = False,
+                        showPlot        = False,
+                        legacy          = True )
 
         # cmap [ LibSize, column:target, target:column ] x 2 rows
         # delta is CCM at large libSize - CCM at small libSize

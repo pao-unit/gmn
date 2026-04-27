@@ -59,6 +59,13 @@ def NodeIIH( gmnNetwork = None, # dict() from CreateNetwork gmn['Map']
         print( f'    gmnNetwork {len(gmnNetwork)} nodes' )
         print( f'    observed {observed.shape}   generated {generated.shape}' )
 
+    class emptyKS:
+        def __init__( self ) :
+            self.statistic          = None
+            self.pvalue             = None
+            self.statistic_location = None
+            self.statistic_sign     = None
+
     # Subset to match generated & observed number of observations -----------
     N_gen = generated.shape[0]
     N_obs = observed.shape[0]
@@ -79,8 +86,9 @@ def NodeIIH( gmnNetwork = None, # dict() from CreateNetwork gmn['Map']
     # If no ii found {IIH=None, bins=None, intervals=[]}
     D_gen_IIH = dict()
     D_obs_IIH = dict()
-    D_KS      = dict()
-    D_KL      = dict()
+    D_IIH_KS  = dict()
+    D_data_KS = dict()
+    D_IIH_KL  = dict()
 
     for node in gmnNetwork.keys() :
         D_gen_IIH[ node ] = IIH( generated[node], varName = node,
@@ -94,39 +102,53 @@ def NodeIIH( gmnNetwork = None, # dict() from CreateNetwork gmn['Map']
         if not D_gen_IIH[ node ]['IIH'] is None and \
            not D_obs_IIH[ node ]['IIH'] is None :
             # Kolmorgorov - Smirnov statistic on generated : observed intervals
-            D_KS[ node ] = KStest( D_gen_IIH[ node ]['intervals'],
-                                   D_obs_IIH[ node ]['intervals'],
-                                   f'gen_{node}', f'obs_{node}' )
-
+            D_IIH_KS[ node ] = KStest( D_gen_IIH[ node ]['intervals'],
+                                       D_obs_IIH[ node ]['intervals'],
+                                       f'gen_{node}', f'obs_{node}' )
             if computeKL :
                 # Kullback-Leibler distance : density IIH
-                D_KL[ node ] = KLdiverge( D_gen_IIH[ node ]['IIH'],
-                                          D_obs_IIH[ node ]['IIH'],
-                                          f'gen_{node}', f'obs_{node}' )
+                D_IIH_KL[ node ] = KLdiverge( D_gen_IIH[ node ]['IIH'],
+                                              D_obs_IIH[ node ]['IIH'],
+                                              f'gen_{node}', f'obs_{node}' )
+        else :
+            D_IIH_KS[ node ] = emptyKS()
+
+        D_data_KS[ node ] = KStest( observed[node], generated[node],
+                                    'obs_'+node, 'gen_'+node )
 
     # Output DataFrame
-    KS_values = [ ks.statistic for ks in D_KS.values() ]
-    KS_pvalue = [ ks.pvalue    for ks in D_KS.values() ]
+    IIH_KS_values  = [ ks.statistic for ks in D_IIH_KS.values() ]
+    IIH_KS_pvalue  = [ ks.pvalue    for ks in D_IIH_KS.values() ]
+    data_KS_value  = [ ks.statistic for ks in D_data_KS.values() ]
+    data_KS_pvalue = [ ks.pvalue    for ks in D_data_KS.values() ]
     if computeKL :
-        KL_values = D_KL.values()
+        KL_values = D_IIH_KL.values()
 
-        df = DataFrame( dict(KS_pvalue = KS_pvalue, KS = KS_values,
-                             KL = KL_values), index = D_KL.keys() )
+        df = DataFrame( dict( IIH_KS_pval  = IIH_KS_pvalue,
+                              IIH_KS       = IIH_KS_values, 
+                              data_KS_pval = data_KS_pvalue,
+                              data_KS      = data_KS_value,
+                              KL           = KL_values ),
+                        index = D_IIH_KL.keys() )
     else :
-        df = DataFrame( dict( KS_pvalue = KS_pvalue, KS = KS_values ),
-                        index = D_KS.keys() )
+        df = DataFrame( dict( IIH_KS_pval  = IIH_KS_pvalue,
+                              IIH_KS       = IIH_KS_values, 
+                              data_KS_pval = data_KS_pvalue,
+                              data_KS      = data_KS_value ),
+                        index = D_IIH_KS.keys() )
 
-    df_ = df.loc[ df['KS_pvalue'] > pvalueThreshold, : ]
+    df_ = df.loc[ df['IIH_KS_pval'] > pvalueThreshold, : ]
     percentNode = 100 * df_.shape[0] / df.shape[0]
     
     if verbose :
         print( f'{df_.shape[0]} of {df.shape[0]} nodes {percentNode:.1f}% ' +\
-               f'with K-S p-value > {pvalueThreshold}' )
+               f'with IIH K-S p-value > {pvalueThreshold}' )
         print( df_ )
 
     if plot :
         #df.plot( y = df.columns, subplots = True, lw = 3, figsize = (12,8) )
-        axes = df.plot( y = ['KS_pvalue','KS'], style = '.-', subplots = True,
+        axes = df.plot( y = ['IIH_KS_pval','IIH_KS'], style = '.-',
+                        subplots = True,
                         markersize = 18, linewidth = 3, figsize = (12,6) )
         axes[0].axhline( y = pvalueThreshold, color = 'black', linestyle = '-',
                          linewidth = 1, label = str(pvalueThreshold) )
