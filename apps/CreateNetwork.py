@@ -18,11 +18,12 @@ from gmn.Auxiliary import ReadDataFrame
 #----------------------------------------------------------------------------
 def CreateNetwork( interactionMatrix = None, interactionMatrixFile = None,
                    targetCols = [], threshold = 0, numDrivers = 3,
-                   driversFile = None, driversColumns = ['column','E'],
-                   excludeColumns = [], outputFile = None, cmi = False,
-                   plotNetwork = False, layout = 'arf', arrowsize = 10,
-                   node_size = 30, node_color = '#1f78b4', alpha = 1,
-                   width = 1.2, figsize = (8,8), fontSize = 12,
+                   maxNodes = None, driversFile = None,
+                   driversColumns = ['column','E'], excludeColumns = [],
+                   outputFile = None, cmi = False, plotNetwork = False,
+                   layout = 'arf', arrowsize = 10, node_size = 30,
+                   node_color = '#1f78b4', alpha = 1, width = 1.2,
+                   figsize = (8,8), fontSize = 12,
                    verbose = False, debug = False ):
 
     '''Create a GMN network using networkx directed graph DiGraph.
@@ -80,10 +81,11 @@ def CreateNetwork( interactionMatrix = None, interactionMatrixFile = None,
     explore_queue = targetCols.copy()  
     network_dict  = {}  # { node : [drivers] }
     network_cycle = {}  # nodes that create loops (not used)
+    terminateMaxNodes = False
 
     # Starting at targetCols, keep adding nodes until no more
     # nodes in explore_queue
-    while len( explore_queue ):
+    while len( explore_queue ) and not terminateMaxNodes:
         node_id = explore_queue.pop(0)
 
         if node_id in network_nodes:
@@ -122,6 +124,14 @@ def CreateNetwork( interactionMatrix = None, interactionMatrixFile = None,
 
             if is_directed_acyclic_graph( network_graph ):
                 network_dict[ node_id ].append( driver_id )
+
+                if maxNodes is not None:
+                    numNodes = network_graph.number_of_nodes()
+                    if numNodes >= maxNodes :
+                        print(f"Terminating at maxNodes {numNodes}",
+                              flush = True)
+                        terminateMaxNodes = True
+                        break
             else:
                 # driver_id created a cycle, remove edge
                 network_graph.remove_edge( driver_id, node_id )
@@ -304,6 +314,7 @@ def CreateNetwork_CmdLine():
                        targetCols     = args.targetCols,
                        threshold      = args.threshold,
                        numDrivers     = args.numDrivers,
+                       maxNodes       = args.maxNodes,
                        driversFile    = args.driversFile,
                        driversColumns = args.driversColumns,
                        excludeColumns = args.excludeColumns,
@@ -345,6 +356,11 @@ def ParseCmdLine():
                         dest   = 'numDrivers', type = int, 
                         action = 'store',  default = 4,
                         help   = 'Number of driver timeseries.')
+
+    parser.add_argument('-m', '--maxNodes',
+                        dest   = 'maxNodes', type = int, 
+                        action = 'store',  default = None,
+                        help   = 'Maximum number of nodes to add.')
 
     parser.add_argument('-df', '--driversFile',
                         dest   = 'driversFile', type = str, 
