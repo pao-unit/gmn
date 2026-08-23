@@ -59,9 +59,9 @@
               </ul>
               <p class="caption"><span class="caption-text">Getting Started</span></p>
               <ul>
-                  <li class="toctree-l1"><a class="reference internal" href="../installation/">Installation</a>
-                  </li>
                   <li class="toctree-l1"><a class="reference internal" href="../example/">Example</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../installation/">Installation</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">Documentation</span></p>
@@ -100,34 +100,29 @@
               
                 <h2 id="gmn-overview">GMN Overview</h2>
 <hr />
-<p>Network structure is a foundation of complex systems as demonstrated in genomic <a href="https://doi.org/10.1371/journal.pgen.1004162">Turner 2014</a>, metabolic <a href="https://doi.org/10.1038/35075138">Jeong 2001</a>, physiologic <a href="https://doi.org/10.1038/ncomms1705">Bashan 2012</a>, social, and neural systems/networks <a href="https://doi.org/10.1038/s41586-025-08790-w">Bae 2025</a>,<a href="https://doi.org/10.1038/s41593-020-0641-7">Assaf 2020</a>. Networks often express low-dimensional structure within a high-dimensional system consistent with the manifold hypothesis <a href="https://doi.org/10.1038/s41567-023-02303-0">Thibeault 2024</a> evidenced in living systems <a href="https://onlinelibrary.wiley.com/doi/abs/10.1002/bies.202100062">Eckmann 2021</a> and their neural processing <a href="https://www.science.org/doi/abs/10.1126/sciadv.adj9303">Fontenele 2024</a>. The fact that fantastically complex structures such as mammalian brains express function and behavior not as single, ultra high-dimensional objects, but as interacting networks suggests the computational architecture should encompass low-dimensional, multiscale, interacting networks.</p>
-<p>Generative manifold networks (GMN) combine these essential features into a new architecture based on interactive dynamical manifolds. GMN networks are discovered through an interaction function between observables defining an adjacency matrix from which a network graph for a desired target observable is grown. The interaction function can be a metric of causality such as convergent cross mapping (CCM) <a href="https://www.science.org/doi/10.1126/science.1227079">Sugihara 2012</a>, mutual information, nonlinearity <a href="https://arxiv.org/abs/2106.10627">Pao 2021</a>,<a href="https://royalsocietypublishing.org/doi/10.1098/rsta.1994.0106">Sugihara 1994</a>,<a href="https://onlinelibrary.wiley.com/doi/abs/10.1002/sta4.96">Smith 2015</a> or other suitable interaction metric. Each node of the network is a multivariate state space manifold leveraging the power of generalized embedding <a href="https://www.ncbi.nlm.nih.gov/pubmed/21483839">Deyle 2011</a>. The architecture is therefore simple, low-dimensional and observable.</p>
-<p>GMN can be used to discover manifold networks underlying complex, nonlinear dynamical systems toward understanding and prediction of their internal states and behaviors <a href="https://arxiv.org/abs/2106.10627">Pao et al. 2021</a>.</p>
+<p>Network structure is a foundation of complex systems as demonstrated in genomic (<a href="https://doi.org/10.1371/journal.pgen.1004162">Turner 2014</a>), metabolic (<a href="https://doi.org/10.1038/35075138">Jeong 2001</a>), physiologic (<a href="https://doi.org/10.1038/ncomms1705">Bashan 2012</a>), social, and neural systems/networks (<a href="https://doi.org/10.1038/s41586-025-08790-w">Bae 2025</a>,<a href="https://doi.org/10.1038/s41593-020-0641-7">Assaf 2020</a>). Networks often express low-dimensional structure within a high-dimensional system consistent with the manifold hypothesis (<a href="https://doi.org/10.1038/s41567-023-02303-0">Thibeault 2024</a>) evidenced in living systems (<a href="https://onlinelibrary.wiley.com/doi/abs/10.1002/bies.202100062">Eckmann 2021</a>) and their neural processing (<a href="https://www.science.org/doi/abs/10.1126/sciadv.adj9303">Fontenele 2024</a>). The fact that fantastically complex structures such as mammalian brains express function and behavior not as single, ultra high-dimensional objects, but as interacting networks suggests the computational architecture should encompass low-dimensional, multiscale, interacting networks.</p>
+<p>Generative manifold networks (GMN) combine these essential features into a new architecture based on interactive dynamical manifolds. GMN networks are discovered through an interaction function between observables defining an adjacency matrix from which a network graph for a desired target observable is grown. The interaction function can be a metric of causality such as convergent cross mapping (CCM) (<a href="https://www.science.org/doi/10.1126/science.1227079">Sugihara 2012</a>), mutual information, nonlinearity (<a href="https://royalsocietypublishing.org/doi/10.1098/rsta.1994.0106">Sugihara 1994</a>,<a href="https://onlinelibrary.wiley.com/doi/abs/10.1002/sta4.96">Smith 2015</a>,<a href="https://arxiv.org/abs/2106.10627">Pao 2021</a>,) or other suitable interaction metric. Each node of the network is a multivariate state space manifold driven by observables leveraging the power of generalized embedding (<a href="https://www.ncbi.nlm.nih.gov/pubmed/21483839">Deyle 2011</a>). The architecture is therefore simple, low-dimensional and observable.</p>
+<p>GMN can be used to discover manifold networks underlying complex, nonlinear dynamical systems toward understanding and prediction of their internal states and behaviors (<a href="https://doi.org/10.64898/2026.05.12.724527">Park et al. 2026</a>).</p>
 <h3 id="manifold-representation">Manifold Representation</h3>
-<p>Many state-space analytic methods presume the state-space can be represented as an invariant manifold completely encapsulating the system dynamics. Another common presumption is that a diffeomorphic representation of the true manifold can be derived from Takens embedding applied to a univariate time series observed from the system.  In practice, univariate observations may not sufficiently encapsulate the underlying dynamics, an issue that is compounded as the dimensionaliy and complexity of the dynamics increase. Further, it is not always clear in multidimensional complex systems whether univariate observations are soley generated by the presumed dynamics. For example, noise and influences from other related or coupled dynamical systems may be present.</p>
-<p>In cases where the dynamics arise from a complex interaction network, the realities of partial observation imply that univariate reconstructions from various time series of the system may not provide a diffeomorphic representation of a single underlying manifold, but each yeilding a manifold expressing different state-space structures. Instead, decomposing the system into an interacting network of manifolds may better represent the underlying dynamics.</p>
+<p>Many state-space analytic methods presume the state-space can be represented as an invariant manifold completely encapsulating the system dynamics. Another common presumption is that a diffeomorphic representation of the true manifold can be derived from Takens embedding of a <em>univariate</em> time series observed from the system.  In practice, univariate observations may not sufficiently encapsulate the underlying dynamics, an issue that is compounded as dimensionaliy and complexity of the dynamics increase.</p>
+<p>In cases where the dynamics arise from a complex interaction network, the realities of partial observation imply that univariate reconstructions from various time series of the system may not provide a diffeomorphic representation of a global underlying manifold. Instead, decomposing the system into an interacting network of manifolds may better represent the underlying dynamics.</p>
 <h3 id="network-determination">Network Determination</h3>
-<p>Manifold network structure is discovered using an interaction matrix quantifying the mutual interaction between all observables.</p>
+<p>Manifold network structure is discovered using an interaction matrix quantifying  interactions between all observables.</p>
 <h4 id="interaction-matrix">Interaction Matrix</h4>
-<p>Given a data set with N feature vectors of length M where M corresponds to the number of time series observations, the interaction matrix (iMatrix) is an NxN matrix with each entry quantified by application of an interaction function F() between all combination of feature vectors. A low-dimensional state-space manifold corresponding to each feature vector establishes a <code>Node</code> in the GMN <code>Network</code>. </p>
+<p>Given a data set with N observation vectors the interaction matrix (iMatrix) is an NxN matrix with each entry quantified by application of an interaction function F() between all combination of observables.</p>
 <hr />
 <h2 id="_1"><img alt="alt text" src="../imgs/InteractionMatrix_I.png" title="Interaction Matrix" /></h2>
-<p>The application program <a href="https://github.com/NonlinearDynamicsDSU/gmn/blob/c770cc0a83df9fb4cc5f1ed7e555192c80d1c592/apps/InteractionMatrix.py"><code>InteractionMatrix.py</code></a> in the <code>apps/</code> directory can create a variety of interaction matrices using different interaction functions F(). Results are stored in a Python pickled dictionary of pandas dataFrames or output as .csv files. See the docstring in <a href="https://github.com/NonlinearDynamicsDSU/gmn/blob/c770cc0a83df9fb4cc5f1ed7e555192c80d1c592/apps/InteractionMatrix.py"><code>InteractionMatrix.py</code></a>.</p>
-<p>Avialable methods :</p>
+<p>The application program <a href="https://github.com/NonlinearDynamicsDSU/gmn/blob/c770cc0a83df9fb4cc5f1ed7e555192c80d1c592/apps/InteractionMatrix.py"><code>InteractionMatrix.py</code></a> can create interaction matrices using a variety of interaction functions F().</p>
+<p>Avialable functions include :</p>
 <table>
 <thead>
 <tr>
 <th>Method</th>
 <th>Label</th>
-<th>CLI argument</th>
+<th>argument</th>
 </tr>
 </thead>
 <tbody>
-<tr>
-<td>All Metrics</td>
-<td></td>
-<td>-a --allMethods</td>
-</tr>
 <tr>
 <td>Cross Correlation</td>
 <td>CC</td>
@@ -170,19 +165,16 @@
 </tr>
 </tbody>
 </table>
-<p>A natural choice for the interaction function F() is convergent cross mapping (CCM). The CCM result is the mean prediction skill (Pearson correlation) of an EDM Simplex predictor over an ensemble of predictions across a spectrum of randomly selected state-space library vectors at each library size. Specifically, predictions with small libraries with partial state-space information are compared to a large library size with more complete state-space information. If the difference in prediction skill between the large and small library sizes exceeds a user-defined threshold, CCM is considered to have converged and the positive CCM value is recorded. Otherwise, a value of 0 is recorded. </p>
-<hr />
+<h2 id="a-natural-choice-for-the-interaction-function-f-is-convergent-cross-mapping-ccm-since-ccm-validates-that-the-two-variables-are-part-of-the-same-dynamical-system-results-are-stored-in-a-python-pickled-dictionary-of-pandas-dataframes-or-output-as-csv-files-see-the-docstring-in-interactionmatrixpy">A natural choice for the interaction function F() is convergent cross mapping (CCM) since CCM validates that the two variables are part of the same dynamical system. Results are stored in a Python pickled dictionary of pandas dataFrames or output as .csv files. See the docstring in <a href="https://github.com/NonlinearDynamicsDSU/gmn/blob/c770cc0a83df9fb4cc5f1ed7e555192c80d1c592/apps/InteractionMatrix.py"><code>InteractionMatrix.py</code></a>.</h2>
 <h4 id="network-creation">Network Creation</h4>
-<p>Once an interaction matrix is defined the application program <code>CreateNetwork.py</code> in the <code>apps/</code> directory can build the GMN network.  The network is created as a <a href="https://networkx.org/"><code>networkx</code></a> acyclic directed graph (DiGraph) and stored in a Python dictionary with keys <code>Graph</code> : the networkx DiGraph, and <code>Map</code> : a Python dictionary of node names. The output is stored as either a Python pickled object or json file.</p>
-<p>Nodes are added recursively starting at the output node(s), adding links according to the network interaction matrix until the limit of node drivers is reached, and, disallowing the creation of network cycles.  </p>
-<p>The number of drivers is a network property and can specified globally as a command line argument (<code>-d</code>, <code>--numDrivers</code>) to <code>CreateNetwork.py</code>. It can also be assigned to each node individually with the (<code>-df</code>, <code>--driversFile</code>) argument specifying a .csv or .feather file mapping node names to the number of drivers. </p>
+<p>Once an interaction matrix is defined the application program <code>CreateNetwork.py</code> builds the GMN network as a <a href="https://networkx.org/"><code>networkx</code></a> acyclic directed graph (DiGraph). Nodes are added recursively starting at the output node(s) adding links according to the network interaction matrix while disallowing creation of network cycles. The network is stored in a Python dictionary with keys <code>Graph</code> : the networkx DiGraph, and <code>Map</code> : a Python dictionary of node names. </p>
 <p><img alt="alt text" src="../imgs/CreateNetwork_II.png" title="Create Network" /></p>
 <h4 id="generative-mode">Generative Mode</h4>
-<p>Once a network is created GMN can be run to generate time series at the output nodes. First a <code>GMN</code> class object is created from the <code>gmn</code> package and initialized according to the configuration file.</p>
+<p>Each <code>Node</code> consists of a low-dimensional state-space manifold with an output corresponding to an observation vector. Given the network and observation vectors a <code>GMN</code> class object is created and initialized according to a configuration file.</p>
 <pre><code class="language-python">import gmn
 G = gmn.GMN( configFile = 'config/default.cfg' )
 </code></pre>
-<p>The network can then be run in generative mode:</p>
+<p>The network is run in generative mode to generate time series at all nodes:</p>
 <pre><code class="language-python">G.Generate()
 </code></pre>
 <p><img alt="alt text" src="../imgs/GenerativeMode_III.png" title="Generative Mode" /></p>
@@ -191,7 +183,7 @@ G = gmn.GMN( configFile = 'config/default.cfg' )
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
         <a href=".." class="btn btn-neutral float-left" title="Home"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="../installation/" class="btn btn-neutral float-right" title="Installation">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../example/" class="btn btn-neutral float-right" title="Example">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
   <hr/>
@@ -218,7 +210,7 @@ G = gmn.GMN( configFile = 'config/default.cfg' )
       <span><a href=".." style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
-      <span><a href="../installation/" style="color: #fcfcfc">Next &raquo;</a></span>
+      <span><a href="../example/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>

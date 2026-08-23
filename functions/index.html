@@ -49,9 +49,9 @@
               </ul>
               <p class="caption"><span class="caption-text">Getting Started</span></p>
               <ul>
-                  <li class="toctree-l1"><a class="reference internal" href="../installation/">Installation</a>
-                  </li>
                   <li class="toctree-l1"><a class="reference internal" href="../example/">Example</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../installation/">Installation</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">Documentation</span></p>
@@ -105,16 +105,21 @@
 Class object for Generative Manifold Networks (GMN).</p>
 <p><strong>Constructor Signature</strong></p>
 <pre><code class="language-python">class GMN:
-    def __init__( self, args  = None,  parameters = None,
+    def __init__( self,
+                  args        = None,  parameters = None,
                   configFile  = None,  configDir  = None,
                   outputFile  = None,  cores      = 4,
+                  backend     = None,  chunks     = None,
+                  kdWorkers   = None,  kernel     = None,
                   plot        = False, plotType   = 'state',
                   plotColumns = [],    plotFile   = None,
                   figureSize  = [8,8], verbose    = False, debug = False ):
 </code></pre>
-<p>Full configuration is performed by instantiating GMN with <code>args</code> from <a href="https://github.com/NonlinearDynamicsDSU/gmn/blob/master/gmn/CLI_Parser.py">gmn.CLI_Parser.ParseCmdLine()</a> and <code>parameters</code> from <a href="https://github.com/NonlinearDynamicsDSU/gmn/blob/master/gmn/ConfigParser.py">gmn.ConfigParser.ReadConfig()</a>. This is normally done in an application such as the command-line-interface (CLI) program <a href="https://github.com/NonlinearDynamicsDSU/gmn/blob/master/apps/Run.py">Run.py</a>.</p>
+<p>Full configuration is performed by instantiating GMN with a config file: <code>gmn = GMN( configFile = 'myConfig.cfg' )</code>. It can also be configured passing in <code>args</code> from <a href="https://github.com/NonlinearDynamicsDSU/gmn/blob/master/gmn/CLI_Parser.py">gmn.CLI_Parser.ParseCmdLine()</a> and <code>parameters</code> from <a href="https://github.com/NonlinearDynamicsDSU/gmn/blob/master/gmn/ConfigParser.py">gmn.ConfigParser.ReadConfig()</a>. This is done by the command-line-interface (CLI) program <a href="https://github.com/NonlinearDynamicsDSU/gmn/blob/master/apps/Run.py">Run.py</a>. <a href="https://github.com/NonlinearDynamicsDSU/gmn/blob/master/apps/RunNoConfig.py">RunNoConfig.py</a> does neither: it has its own argument parser and populates a <code>Parameters</code> object directly from the command line, since its purpose is to run without a config file.</p>
 <p>If <code>args</code> is <code>None</code> <code>GMN.__init__</code> function arguments are used to populate args. </p>
-<p>If <code>parameters</code> is <code>None</code> the parameters object is created from <code>args</code>.</p>
+<p>If <code>parameters</code> is <code>None</code> the <code>Parameters</code> object is read from the config file named by <code>args.configFile</code>, via <code>ConfigParser.ReadConfig()</code>. Command line values are not merged into it: they remain on <code>args</code>.</p>
+<p>A config file may specify any subset of the recognized keys. Keys omitted from the file keep the default assigned in <code>Parameters.__init__</code>.</p>
+<p><code>backend</code> and <code>kernel</code> default to <code>None</code> so that a config file can set them. Each is resolved as: an explicit constructor or CLI value, otherwise the config file <code>[GMN]</code> key, otherwise the <code>Parameters</code> default (<code>'serial'</code>, <code>True</code>).</p>
 <table>
 <thead>
 <tr>
@@ -150,7 +155,7 @@ Class object for Generative Manifold Networks (GMN).</p>
 <td>Path to directory of configuration file(s)</td>
 </tr>
 <tr>
-<td>dataOutFile</td>
+<td>outputFile</td>
 <td>string</td>
 <td>None</td>
 <td>Generated data output file : .csv or .feather</td>
@@ -162,20 +167,44 @@ Class object for Generative Manifold Networks (GMN).</p>
 <td>Number of CPU processor cores</td>
 </tr>
 <tr>
+<td>backend</td>
+<td>string</td>
+<td>None</td>
+<td>'serial' or 'parallel'</td>
+</tr>
+<tr>
+<td>chunks</td>
+<td>int</td>
+<td>None</td>
+<td>parallel chunk size</td>
+</tr>
+<tr>
+<td>kdWorkers</td>
+<td>int</td>
+<td>None</td>
+<td>thread workers in kdTree.query() : pyEDM only</td>
+</tr>
+<tr>
+<td>kernel</td>
+<td>bool</td>
+<td>None</td>
+<td>True - float32 Simplex kernel : False - pyEDM node functions</td>
+</tr>
+<tr>
 <td>plot</td>
 <td>bool</td>
 <td>False</td>
 <td>Logical to plot time series results</td>
 </tr>
 <tr>
-<td>statePlot</td>
-<td>bool</td>
-<td>False</td>
-<td>Logical to plot time series and state results</td>
+<td>plotType</td>
+<td>string</td>
+<td>'state'</td>
+<td>'time' or 'state' plot</td>
 </tr>
 <tr>
 <td>plotColumns</td>
-<td>[]</td>
+<td>list</td>
 <td>[]</td>
 <td>List of columns to plot</td>
 </tr>
@@ -186,10 +215,22 @@ Class object for Generative Manifold Networks (GMN).</p>
 <td>File for plot results</td>
 </tr>
 <tr>
+<td>figureSize</td>
+<td>list</td>
+<td>[8,8]</td>
+<td>Plot figure size in inches</td>
+</tr>
+<tr>
+<td>verbose</td>
+<td>bool</td>
+<td>False</td>
+<td>Logical for verbose output</td>
+</tr>
+<tr>
 <td>debug</td>
 <td>bool</td>
 <td>False</td>
-<td>Logical to print debug info</td>
+<td>Logical for debug output, enables faulthandler</td>
 </tr>
 </tbody>
 </table>
@@ -227,7 +268,7 @@ If <code>args.outputFile</code>, or <code>parameters.dataOutFile</code>: write <
 <hr />
 <h3 id="gmnplot"><function> GMN.Plot </function></h3>
 <p>** Description **  : <br />
-Plot generated time series (args.plot = True, or Parameters.plotType is 'time') or time series and 2-D state-space plots (args.statePlot = True, or Parameters.plotType is 'state').</p>
+Plot generated time series (args.Plot = True, or Parameters.plotType is 'time') or time series and 2-D state-space plots (args.StatePlot = True, or Parameters.plotType is 'state').</p>
 <p><strong>Returns</strong>  :<br />
 pyplot image </p>
 <hr />
@@ -242,7 +283,7 @@ Python object of Parameters class.</p>
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href="../example/" class="btn btn-neutral float-left" title="Example"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../installation/" class="btn btn-neutral float-left" title="Installation"><span class="icon icon-circle-arrow-left"></span> Previous</a>
         <a href="../parameters/" class="btn btn-neutral float-right" title="Parameters">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
@@ -267,7 +308,7 @@ Python object of Parameters class.</p>
   <span class="rst-current-version" data-toggle="rst-current-version">
     
     
-      <span><a href="../example/" style="color: #fcfcfc">&laquo; Previous</a></span>
+      <span><a href="../installation/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
       <span><a href="../parameters/" style="color: #fcfcfc">Next &raquo;</a></span>

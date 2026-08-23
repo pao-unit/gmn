@@ -49,8 +49,6 @@
               </ul>
               <p class="caption"><span class="caption-text">Getting Started</span></p>
               <ul class="current">
-                  <li class="toctree-l1"><a class="reference internal" href="../installation/">Installation</a>
-                  </li>
                   <li class="toctree-l1 current"><a class="reference internal current" href="#">Example</a>
     <ul class="current">
     <li class="toctree-l2"><a class="reference internal" href="#interaction-matrix">Interaction Matrix</a>
@@ -60,6 +58,8 @@
     <li class="toctree-l2"><a class="reference internal" href="#generative-mode">Generative Mode</a>
     </li>
     </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../installation/">Installation</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">Documentation</span></p>
@@ -98,34 +98,35 @@
             <div class="section" itemprop="articleBody">
               
                 <h2 id="gmn-example">GMN Example</h2>
-<p>This simple example demonstrates the processing pipeline on a toy data set with no meaningful network structure or information flow.</p>
-<p>The network consists of 5 nodes: <code>A B C D Out</code>. Each node represents a time series of length 1000 points with network structure and time series:</p>
+<p>A simple example demonstrates the processing pipeline on a toy data set. The network consists of 5 nodes: <code>A B C D Out</code>. Each node represents a time series of length 1000 points with network structure and time series:</p>
 <p><img alt="alt text" src="../imgs/ABCD_Network_Schematic.png" title="Network Schematic" /></p>
 <hr />
 <h3 id="interaction-matrix">Interaction Matrix</h3>
-<p>The interaction matrix defines the GMN network structure and can be created with the <code>InteractionMatrix.py</code> python command-line application (see <a href="../overview/">Interaction Matrix</a>). Application arguments can be shown with the <code>-h</code> argument. Here, we create the interaction matrix from data file <code>TestData_ABCD.csv</code> using the EDM convergent cross mapping (CCM) metric, storing the output interaction matrix in <code>ABCD_iMatrix_E5_tau-3_CCM.csv</code>.  CCM is passed an embedding dimension of E=5, and time delay of tau=-3. </p>
+<p>The interaction matrix defines the GMN network created with the <code>InteractionMatrix.py</code> application (see <a href="../overview/">Interaction Matrix</a>). Help can be shown with the <code>-h</code> argument. We create the interaction matrix from data file <code>TestData_ABCD.csv</code> using the EDM convergent cross mapping (CCM) metric, storing the output interaction matrix in <code>ABCD_iMatrix_E5_tau-3_CCM.csv</code>.  CCM is passed an embedding dimension of E=5, and time delay of tau=-3. </p>
 <pre><code class="language-python">./apps/InteractionMatrix.py -d ./data/TestData_ABCD.csv -oc ./output/ABCD_iMatrix_E5_tau-3 -ccm -E 5 -t -3 -P
 
 </code></pre>
-<p><img src="../imgs/ABCD_iMatrix_E5_tau-3_CCM.png" alt="ABCD CCM iMatrix" width="300" /></p>
+<p><img src="../imgs/ABCD_iMatrix_E5_tau-3_CCM.png" alt="ABCD CCM iMatrix" width="350" /></p>
 <!-- ![alt text](imgs/ABCD_iMatrix_E5_tau-3_CCM.png "ABCD CCM iMatrix") -->
 
 <h3 id="network-creation">Network Creation</h3>
 <p>The <code>CreateNetwork.py</code> application (see <a href="overview/">Create Network</a>) reads the interaction matrix and creates the <code>networkx</code> directed graph object, here stored in a binary file using the python pickle module.</p>
-<pre><code class="language-python">./apps/CreateNetwork.py -i ./output/ABCD_iMatrix_E5_tau-3_CCM.csv -o ./output/ABCD_Network_E5_tau-3_CCM.pkl -d 4 -P
+<pre><code class="language-python">./apps/CreateNetwork.py -i ./output/ABCD_iMatrix_E5_tau-3_CCM.csv -t Out -o ./output/ABCD_Network_E5_tau-3_CCM.pkl -d 4 -P -l spring
 </code></pre>
-<p><img src="../imgs/ABCD_Network_E5_tau-3_CCM.png" alt="ABCD CCM Network" width="300" /></p>
+<p><img src="../imgs/ABCD_Network_E5_tau-3_CCM.png" alt="ABCD CCM Network" width="350" /></p>
 <!-- ![alt text](imgs/ABCD_Network_E5_tau-3_CCM.png "ABCD CCM Network") -->
 
 <hr />
 <h3 id="generative-mode">Generative Mode</h3>
 <p>With a GMN network we can run GMN in generative mode according to the parameters specified in a configuration file (see <a href="../parameters/">Parameters</a>). <code>[EDM]</code> parameters are defined in <a href="https://sugiharalab.github.io/EDM_Documentation/parameters/">EDM Parameters</a>.</p>
-<p>Define the configuration file <code>./network/ABCD_Network_E5_tau-3_CCM.cfg</code> as :</p>
-<pre><code class="language-python">[GMN]
+<p>Define the configuration file <code>./network/ABCD_Out.cfg</code> as :</p>
+<pre><code class="language-config">[GMN]
 mode             = Generate
-predictionLength = 300
 predictionStart  = 700
-outPath          = ./output
+predictionLength = 300
+backend          = serial
+kernel           = True
+outPath          = ../output
 dataOutFile      =
 showPlot         = True
 plotType         = state
@@ -135,63 +136,43 @@ plotFile         =
 [Network]
 name       = ABCD 4 Driver
 targetNode = Out
-file       = ./output/ABCD_Network_E5_tau-3_CCM.pkl
+file       = ./network/ABCD_Test/ABCD_Network_E3_T0_tau-1_CMI.pkl
 data       = ./data/TestData_ABCD.csv
 
 [Node]
-info       = 
-data       = 
-configPath = 
+info       = EDM Simplex Manifolds
 function   = Simplex
 
 [EDM]
-lib             = 
-pred            = 
-E               = 7
-Tp              = 1
-knn             = 0
-tau             = -3
-theta           = 3
-exclusionRadius = 0
-columns         = 
-target          = 
-solver          = 
-embedded        = False
-validLib        = 
-generateSteps   = 0
-libSizes        = 
-sample          = 0
-random          = False
-includeData     = False
-seed            = 0
+E        = 7
+Tp       = 1
+tau      = -3
+validLib = 
 
 [Scale]
-factor          = 1
-offset          = 0
+factor = 1
+offset = 0
 </code></pre>
 <p>From the python console import the gmn package, create the GMN object and run the network in generative mode:</p>
-<pre><code class="language-python">import gmn
-
-G = gmn.GMN( configFile = './network/ABCD_Network_E5_tau-3_CCM.cfg' )
-
-G.Generate()
-
-G.DataOut.tail( 5 )
-     Time             A         B       C         D       Out
-295   996 -2.487000e-01  0.986701 -0.5018  0.749998 -0.986295
-296   997 -1.874000e-01  0.984824 -0.4708  0.793698 -0.990915
-297   998 -1.253000e-01  0.963399 -0.4248  0.817698 -0.966998
-298   999 -6.280002e-02  0.922292 -0.3671  0.822396 -0.919153
-299  1000 -2.438686e-08  0.861684 -0.3016  0.808996 -0.867577
-</code></pre>
+<p>```python
+import gmn</p>
+<p>G = gmn.GMN( configFile = './config/ABCD_Out.cfg' )</p>
+<p>G.Generate()</p>
+<p>G.DataOut.tail( 5 )
+     Time       A       C       D         B       Out
+295   996 -0.2487 -0.5018  0.7500  0.985236 -0.979370
+296   997 -0.1874 -0.4708  0.7937  0.985842 -0.991504
+297   998 -0.1253 -0.4248  0.8177  0.965066 -0.973041
+298   999 -0.0628 -0.3671  0.8224  0.923630 -0.931681
+299  1000  0.0000 -0.3016  0.8090  0.862222 -0.871642</p>
 <p>The output state plot shows the library (observed time series &amp; state-space) in blue, and GMN generated values in orange.</p>
 <center><img src="../imgs/ABCD_GMN_State_CCM_E7_tau-3.png" alt="ABCD CCM GMN State" width="500" /></center>
               
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href="../installation/" class="btn btn-neutral float-left" title="Installation"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="../functions/" class="btn btn-neutral float-right" title="Functions">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../overview/" class="btn btn-neutral float-left" title="Overview"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../installation/" class="btn btn-neutral float-right" title="Installation">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
   <hr/>
@@ -215,10 +196,10 @@ G.DataOut.tail( 5 )
   <span class="rst-current-version" data-toggle="rst-current-version">
     
     
-      <span><a href="../installation/" style="color: #fcfcfc">&laquo; Previous</a></span>
+      <span><a href="../overview/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
-      <span><a href="../functions/" style="color: #fcfcfc">Next &raquo;</a></span>
+      <span><a href="../installation/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>

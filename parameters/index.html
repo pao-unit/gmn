@@ -49,9 +49,9 @@
               </ul>
               <p class="caption"><span class="caption-text">Getting Started</span></p>
               <ul>
-                  <li class="toctree-l1"><a class="reference internal" href="../installation/">Installation</a>
-                  </li>
                   <li class="toctree-l1"><a class="reference internal" href="../example/">Example</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../installation/">Installation</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">Documentation</span></p>
@@ -94,14 +94,16 @@
             <div class="section" itemprop="articleBody">
               
                 <h2 id="parameters">Parameters</h2>
-<p>The <code>GMN.Parameters</code> object is a mapping of configuration file parameters. A single configuration file can be provided in the <code>GMN</code> constructor or command line argument in which case each <code>Node</code> in the <code>Network</code> will inherit the same configuration file and parameters.</p>
-<p>If a <code>Network</code> <code>Node</code> is named <code>node_1</code> and if a file named <code>node_1.cfg</code> is found in the <code>Network.path</code>, then <code>node_1</code> will load the <code>node_1.cfg</code> file defining the <code>Node</code> parameters. </p>
+<p>The <code>GMN.Parameters</code> object is a mapping of configuration file parameters. A single configuration file can be provided in the <code>GMN</code> constructor or command line argument in which case each <code>Node</code> in the <code>Network</code> will inherit the same configuration file and parameters across the network.</p>
+<p><code>Node</code> specific configuration can be supplied, for example, if a <code>Node</code> is named <code>node_1</code> and if a file named <code>node_1.cfg</code> is found in the <code>Network.path</code> then <code>node_1</code> will load the <code>node_1.cfg</code> file to apply parameters to the <code>Node</code>.</p>
 <p><code>[EDM]</code> parameters are defined in <a href="https://sugiharalab.github.io/EDM_Documentation/parameters/">EDM Parameters</a>.</p>
 <h3 id="configuration-file">Configuration File</h3>
 <pre><code class="language-python">[GMN]
 mode             = Generate
 predictionStart  = 700
 predictionLength = 300
+backend          = serial
+kernel           = True
 outPath          = ../output
 dataOutFile      =
 showPlot         = True
