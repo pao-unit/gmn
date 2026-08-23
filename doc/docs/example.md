@@ -86,5 +86,6 @@ G.DataOut.tail( 5 )
 299  1000  0.0000 -0.3016  0.8090  0.862222 -0.871642
 
 The output state plot shows the library (observed time series & state-space) in blue, and GMN generated values in orange.
+```
 
 <center><img src="../imgs/ABCD_GMN_State_CCM_E7_tau-3.png" alt="ABCD CCM GMN State" width="500" /></center>

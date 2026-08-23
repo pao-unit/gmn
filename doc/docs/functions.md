@@ -62,6 +62,7 @@ G = gmn.GMN( configFile = 'config/default.cfg' )
 ---
 
 ### <function> GMN.Generate </function> 
+
 **Description**  :   
 Execute GMN forecast loop for `predictionLength` steps calling the Generate() method of each Network Node. Parameters `mode` must be `Generate`.
 
@@ -80,7 +81,8 @@ G.Generate()
 ---
 
 ### <function> GMN.Forecast </function> 
-** Description **  :
+
+**Description**  :   
 Execute GMN `Forecast()` method of each Network Node. Parameters `mode` must not be `Generate`. Presumes Parameters `lib` and `pred` are specified in the config file. Does not generate data, but makes predictions over the `pred` indices based on the `lib` state-space.
 
 **Returns**  :  
@@ -97,8 +99,9 @@ G.Forecast()
 ```
 ---
 
-### <function> GMN.Plot </function> 
-** Description **  :   
+### <function> GMN.Plot </function>
+
+**Description**  :   
 Plot generated time series (args.Plot = True, or Parameters.plotType is 'time') or time series and 2-D state-space plots (args.StatePlot = True, or Parameters.plotType is 'state').
 
 **Returns**  :  
@@ -109,9 +112,11 @@ pyplot image
 ## GMN Attributes
 
 ### GMN.DataOut
-**Description**  :  
+
+**Description**  :   
 pandas DataFrame of generated data.
 
 ### GMN.Parameters
+
 **Description**  :  
 Python object of Parameters class.
