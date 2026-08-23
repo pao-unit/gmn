@@ -15,8 +15,8 @@ nav:
 - Home : index.md
 - Overview : overview.md
 - Getting Started :
-    - Installation : installation.md
     - Example : example.md
+    - Installation : installation.md
 - Documentation :
     - Functions : functions.md
     - Parameters : parameters.md

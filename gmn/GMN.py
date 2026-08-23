@@ -41,7 +41,9 @@ class GMN:
         from .ConfigParser.ReadConfig.
 
         If args is None GMN.__init__ arguments partially populate args.
-        If parameters is None Parameters object is created from the args.
+        If parameters is None the Parameters object is read from the
+        config file named by args.configFile via ReadConfig() : command
+        line values are not merged into it, they remain on args.
 
         backend and kernel are resolved here since a config file can set
         either : an explicit CLI or constructor value wins, else the

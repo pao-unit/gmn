@@ -1,8 +1,8 @@
 ## Parameters
 
-The `GMN.Parameters` object is a mapping of configuration file parameters. A single configuration file can be provided in the `GMN` constructor or command line argument in which case each `Node` in the `Network` will inherit the same configuration file and parameters.
+The `GMN.Parameters` object is a mapping of configuration file parameters. A single configuration file can be provided in the `GMN` constructor or command line argument in which case each `Node` in the `Network` will inherit the same configuration file and parameters across the network.
 
-If a `Network` `Node` is named `node_1` and if a file named `node_1.cfg` is found in the `Network.path`, then `node_1` will load the `node_1.cfg` file defining the `Node` parameters. 
+`Node` specific configuration can be supplied, for example, if a `Node` is named `node_1` and if a file named `node_1.cfg` is found in the `Network.path` then `node_1` will load the `node_1.cfg` file to apply parameters to the `Node`.
 
  `[EDM]` parameters are defined in [EDM Parameters](https://sugiharalab.github.io/EDM_Documentation/parameters/).
 
@@ -13,6 +13,8 @@ If a `Network` `Node` is named `node_1` and if a file named `node_1.cfg` is foun
 mode             = Generate
 predictionStart  = 700
 predictionLength = 300
+backend          = serial
+kernel           = True
 outPath          = ../output
 dataOutFile      =
 showPlot         = True
