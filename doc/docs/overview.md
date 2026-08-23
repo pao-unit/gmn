@@ -36,7 +36,7 @@ Avialable functions include :
 | SMap nonlinearity               | SMap    | -smap    |
 | CCM : Mutual Information        | CMI     | -cmi     |
 
-A natural choice for the interaction function F() is convergent cross mapping (CCM) since CCM validates that the two variables are part of the same dynamical system. Results are stored in a Python pickled dictionary of pandas dataFrames or output as .csv files. See the docstring in [`InteractionMatrix.py`](https://github.com/NonlinearDynamicsDSU/gmn/blob/c770cc0a83df9fb4cc5f1ed7e555192c80d1c592/apps/InteractionMatrix.py).
+ A natural choice for the interaction function F() is convergent cross mapping (CCM) since CCM validates that the two variables are part of the same dynamical system. Results are stored in a Python pickled dictionary of pandas dataFrames or output as .csv files. See the docstring in [`InteractionMatrix.py`](https://github.com/NonlinearDynamicsDSU/gmn/blob/c770cc0a83df9fb4cc5f1ed7e555192c80d1c592/apps/InteractionMatrix.py).
 ---
 
 #### Network Creation
