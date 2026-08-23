@@ -12,21 +12,38 @@ import gmn
 
 #----------------------------------------------------------------------
 def test_default_backend_serial():
-    '''Default dispatch backend is serial.'''
+    '''Default dispatch backend is serial.
+
+    The CLI default is None so that a config file can supply the value :
+    the operative default lives in Parameters and is resolved by GMN.
+    '''
 
     args = gmn.CLI_Parser.ParseCmdLine( [ '-i', 'x' ] )
 
-    assert args.backend == 'serial'
+    assert args.backend is None
+    assert gmn.Parameters().backend == 'serial'
+
+    args = gmn.CLI_Parser.ParseCmdLine( [ '-i', 'x', '-b', 'parallel' ] )
+
+    assert args.backend == 'parallel'
 
 #----------------------------------------------------------------------
 def test_default_kernel_on():
-    '''Kernel is on by default ; --pyedm opts out.'''
+    '''Kernel is on by default ; --noKernel opts out.
+
+    As with backend, absent on the CLI is None : Parameters holds the
+    operative default so a config file key can win.
+    '''
 
     a = gmn.CLI_Parser.ParseCmdLine( [ '-i', 'x' ] )
-    assert a.pyedm is False
+    assert a.kernel is None
+    assert gmn.Parameters().kernel is True
 
-    b = gmn.CLI_Parser.ParseCmdLine( [ '-i', 'x', '--pyedm' ] )
-    assert b.pyedm is True
+    b = gmn.CLI_Parser.ParseCmdLine( [ '-i', 'x', '--noKernel' ] )
+    assert b.kernel is False
+
+    c = gmn.CLI_Parser.ParseCmdLine( [ '-i', 'x', '-nK' ] )
+    assert c.kernel is False
 
 #----------------------------------------------------------------------
 def test_cli_run_app( tmp_path ):

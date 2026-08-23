@@ -40,7 +40,7 @@ def ParseCmdLine( argv = None ):
     parser.add_argument('-b', '--backend',
                         dest    = 'backend', type = str,
                         action  = 'store',
-                        default = 'serial',
+                        default = None,
                         choices = [ 'parallel', 'serial' ],
                         help    = 'Node dispatch: serial (default). '
                                   'parallel flat thread pool is available '
@@ -61,14 +61,15 @@ def ParseCmdLine( argv = None ):
                         help    = 'Override scipy KDTree.query workers per '
                                   'node (default: serial -1, parallel 1).')
 
-    parser.add_argument('-K', '--pyedm',
-                        dest    = 'pyedm',
-                        action  = 'store_true',
-                        default = False,
-                        help    = 'Force the pyEDM reference path for all '
-                                  'nodes. Default is the float32 kernel for '
-                                  'eligible default-path nodes ( pyEDM is '
-                                  'used automatically where required ).')
+    parser.add_argument('-nK', '--noKernel',
+                        dest    = 'kernel',
+                        action  = 'store_const', const = False,
+                        default = None,
+                        help    = 'Disable the float32 kernel: use the pyEDM '
+                                  'node functions for all nodes. Default is '
+                                  'the kernel for eligible default-path '
+                                  'nodes ( pyEDM is used automatically where '
+                                  'required ).')
 
     parser.add_argument('-t', '--threads',
                         dest    = 'threads', type = int,

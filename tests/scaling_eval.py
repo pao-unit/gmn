@@ -32,8 +32,8 @@ def Run( net, data, backend, cores, kernel, pL, target = 'N0',
             '-Tp', str( Tp ), '-c', str( cores ), '-b', backend,
             '-op', '/tmp/', '-do', 'scaling_tmp.csv' ]
 
-    if kernel :
-        cmd.append( '-K' )
+    if not kernel :
+        cmd.append( '-nK' )
 
     if chunks is not None :
         cmd += [ '-ch', str( chunks ) ]

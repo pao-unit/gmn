@@ -28,8 +28,8 @@ class GMN:
                   args        = None,  parameters = None,
                   configFile  = None,  configDir  = None,
                   outputFile  = None,  cores      = 4,
-                  backend     = 'serial', chunks  = None,
-                  kdWorkers   = None,  kernel     = True,
+                  backend     = None,  chunks     = None,
+                  kdWorkers   = None,  kernel     = None,
                   plot        = False, plotType   = 'state',
                   plotColumns = [],    plotFile   = None,
                   figureSize  = [8,8], verbose    = False, debug = False ):
@@ -42,6 +42,10 @@ class GMN:
 
         If args is None GMN.__init__ arguments partially populate args.
         If parameters is None Parameters object is created from the args.
+
+        backend and kernel are resolved here since a config file can set
+        either : an explicit CLI or constructor value wins, else the
+        config file value, else the Parameters default.
         '''
 
         if args is None:
@@ -55,9 +59,6 @@ class GMN:
             args.chunks      = chunks
             args.kdWorkers   = kdWorkers
             args.kernel      = kernel
-            # Keep pyedm consistent with the kernel kwarg so the
-            # derivation below ( args.kernel = not args.pyedm ) agrees.
-            args.pyedm       = not kernel
             args.Plot        = plot
             args.plotType    = plotType
             args.plotColumns = plotColumns
@@ -82,6 +83,26 @@ class GMN:
             import faulthandler
             faulthandler.enable()
 
+        # Resolve backend and kernel BEFORE the KDTree.query budget below,
+        # which derives from backend. None means neither the CLI flag nor
+        # the constructor kwarg specified one : take the config file value
+        # ( itself the Parameters default when the key is absent ). An
+        # explicit value wins and is written back to Parameters so args
+        # and Parameters cannot disagree.
+        if args.backend is None :
+            args.backend = parameters.backend
+
+        else :
+            parameters.backend = args.backend
+
+        # Kernel is ON by default. --noKernel reverts ALL nodes to the
+        # pyEDM node functions.
+        if args.kernel is None :
+            args.kernel = parameters.kernel
+
+        else :
+            parameters.kernel = args.kernel
+
         # Resolve the KDTree.query thread budget BEFORE Network builds nodes
         # ( each Node reads args.kdWorkers at construction ). An explicit
         # --kdworkers override wins; otherwise derive from backend so outer
@@ -92,17 +113,12 @@ class GMN:
 
         if override is not None :
             args.kdWorkers = override
+
         elif args.backend.lower() == 'serial' :
             args.kdWorkers = -1
+
         else :
             args.kdWorkers = 1
-
-        # Kernel is ON by default. --pyedm forces the reference path for
-        # ALL nodes ( args.pyedm True => kernel False ). When args.pyedm is
-        # absent ( programmatic construction ), fall back to the kernel
-        # kwarg resolved into args above.
-        if hasattr( args, 'pyedm' ) :
-            args.kernel = not args.pyedm
 
         # Instantiate Network : Read DiGraph and instantiate nodes
         self.Network = Network( args, parameters )
@@ -110,7 +126,7 @@ class GMN:
         # Kernel setup : freeze each eligible node's float32 library once
         # ( before the time loop ). Ineligible nodes keep KernelLib None
         # and fall back to pyEDM. No-op unless args.kernel is set.
-        if getattr( args, 'kernel', False ) :
+        if args.kernel :
             nKernel = 0
             for nodeName in self.Network.TopologicalSorted :
                 node = self.Network.Graph.nodes[ nodeName ]['Node']

@@ -1,5 +1,5 @@
 # Single legacy-correctness gate for the pyEDM reference path. The kernel
-# is the default ; this one test forces --pyedm to prove the reference
+# is the default ; this one test forces --noKernel to prove the reference
 # pipeline still produces the frozen output. Marked 'pyedm' ( opt-in, and
 # skipped without pyEDM >= 2.5.7 ). ABCD network, 100 points.
 
@@ -20,7 +20,7 @@ def _fixture_path():
 #----------------------------------------------------------------------
 @pytest.mark.pyedm
 def test_pyedm_reference_generate( in_config_dir ):
-    '''--pyedm path reproduces the frozen ABCD reference exactly.
+    '''--noKernel path reproduces the frozen ABCD reference exactly.
 
     The kernel is the default ; forcing kernel=False exercises the pyEDM
     reference pipeline and must match the checked-in fixture that was
@@ -32,7 +32,7 @@ def test_pyedm_reference_generate( in_config_dir ):
     args            = gmn.CLI_Parser.ParseCmdLine( [] )
     args.configFile = 'default-noPlot.cfg'
     args.configDir  = None
-    args.pyedm      = True
+    args.kernel     = False
     parameters      = gmn.ConfigParser.ReadConfig( args )
     parameters.predictionLength = 100
 

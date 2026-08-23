@@ -3,64 +3,72 @@
 #---------------------------------------------------------------
 class Parameters:
     '''
-    Parameters object for all entities. 
+    Parameters object for all entities.
 
-    Network has one. Each Node has one. 
+    Network has one. Each Node has one.
 
     If a node.cfg file is found read Parameters and data from it.
     If not found, use Network Parameters and data. See Node.py
+
+    The values assigned here are the defaults for keys omitted from a
+    config file : ConfigParser.ReadConfig() overlays only the keys
+    present in the file, so a partial config file is valid. Defaults
+    are concrete values, not None, since consumers assume the type :
+    Plot.plotColumns.split(), Node.target.isspace(), len(dataOutFile).
     '''
 
     def __init__( self ):
         '''Constructor'''
 
         # GMN
-        self.mode             = None
-        self.predictionStart  = None
-        self.predictionLength = None
-        self.outPath          = None
-        self.dataOutFile      = None
-        self.showPlot         = None
-        self.plotType         = None
-        self.plotColumns      = None
-        self.plotFile         = None
+        self.mode             = 'generate'
+        self.predictionStart  = 0
+        self.predictionLength = 10
+        self.outPath          = './'
+        self.dataOutFile      = ''
+        self.showPlot         = False
+        self.plotType         = 'state'
+        self.plotColumns      = ''
+        self.plotFile         = ''
+        self.backend          = 'serial'
+        self.kernel           = True
 
         # Network
-        self.networkName      = None
-        self.targetNode       = None
-        self.networkFile      = None
-        self.networkData      = None
+        self.networkName      = ''
+        self.targetNode       = ''
+        self.networkFile      = ''
+        self.networkData      = ''
 
         # Node
-        self.nodeInfo         = None
-        self.function         = None
-        self.nodeData         = None
-        self.nodeConfigPath   = None
+        self.nodeInfo         = ''
+        self.function         = 'Simplex'
+        self.nodeData         = ''
+        self.nodeConfigPath   = ''
 
         # EDM
-        self.lib              = None
-        self.pred             = None
-        self.E                = None
-        self.Tp               = None
-        self.knn              = None
-        self.tau              = None
-        self.theta            = None
-        self.exclusionRadius  = None
-        self.columns          = None
-        self.target           = None
-        self.solver           = None
-        self.embedded         = None
-        self.validLib         = None
-        self.generateSteps    = None
-        self.libSizes         = None
-        self.sample           = None
-        self.random           = None
-        self.includeData      = None
-        self.seed             = None
+        self.lib              = ''
+        self.pred             = ''
+        self.E                = 3
+        self.Tp               = 1
+        self.knn              = 0
+        self.tau              = -1
+        self.theta            = 3.0
+        self.exclusionRadius  = 0
+        self.columns          = ''
+        self.target           = ''
+        self.solver           = ''
+        self.embedded         = False
+        self.validLib         = []
+        self.generateSteps    = 0
+        self.libSizes         = ''
+        self.sample           = 0
+        self.random           = False
+        self.includeData      = False
+        self.seed             = 0
 
         # Scale
-        self.factor           = None
-        self.offset           = None
+        self.factor           = 1.0
+        self.offset           = 0.0
 
     #-----------------------------------------------------------
     #-----------------------------------------------------------
@@ -77,6 +85,8 @@ class Parameters:
         print( '\t', 'plotType',         self.plotType    )
         print( '\t', 'plotColumns',      self.plotColumns )
         print( '\t', 'plotFile',         self.plotFile    )
+        print( '\t', 'backend',          self.backend     )
+        print( '\t', 'kernel',           self.kernel      )
 
         # Network
         print( '\t', 'networkName', self.networkName )
@@ -85,9 +95,10 @@ class Parameters:
         print( '\t', 'networkData', self.networkData )
 
         # Node
-        print( '\t', 'nodeInfo',    self.nodeInfo )
-        print( '\t', 'nodeData',    self.nodeData )
-        print( '\t', 'function',    self.function )
+        print( '\t', 'nodeInfo',       self.nodeInfo )
+        print( '\t', 'nodeData',       self.nodeData )
+        print( '\t', 'function',       self.function )
+        print( '\t', 'nodeConfigPath', self.nodeConfigPath )
 
         # EDM
         print( '\t', 'lib',             self.lib   )

@@ -34,3 +34,5 @@ Example usage at the python prompt in directory `gmn/config`:
 ---
 ### References
 [Experimentally testable whole brain manifolds that recapitulate behavior](https://arxiv.org/abs/2106.10627)
+
+[Explainable prediction and simulation of complex system dynamics through networks of manifolds](https://doi.org/10.64898/2026.05.12.724527)
