@@ -154,18 +154,22 @@ factor = 1
 offset = 0
 </code></pre>
 <p>From the python console import the gmn package, create the GMN object and run the network in generative mode:</p>
-<p>```python
-import gmn</p>
-<p>G = gmn.GMN( configFile = './config/ABCD_Out.cfg' )</p>
-<p>G.Generate()</p>
-<p>G.DataOut.tail( 5 )
+<pre><code class="language-python">import gmn
+
+G = gmn.GMN( configFile = './config/ABCD_Out.cfg' )
+
+G.Generate()
+
+G.DataOut.tail( 5 )
      Time       A       C       D         B       Out
 295   996 -0.2487 -0.5018  0.7500  0.985236 -0.979370
 296   997 -0.1874 -0.4708  0.7937  0.985842 -0.991504
 297   998 -0.1253 -0.4248  0.8177  0.965066 -0.973041
 298   999 -0.0628 -0.3671  0.8224  0.923630 -0.931681
-299  1000  0.0000 -0.3016  0.8090  0.862222 -0.871642</p>
-<p>The output state plot shows the library (observed time series &amp; state-space) in blue, and GMN generated values in orange.</p>
+299  1000  0.0000 -0.3016  0.8090  0.862222 -0.871642
+
+The output state plot shows the library (observed time series &amp; state-space) in blue, and GMN generated values in orange.
+</code></pre>
 <center><img src="../imgs/ABCD_GMN_State_CCM_E7_tau-3.png" alt="ABCD CCM GMN State" width="500" /></center>
               
             </div>

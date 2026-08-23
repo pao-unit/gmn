@@ -113,7 +113,7 @@
 <hr />
 <h2 id="_1"><img alt="alt text" src="../imgs/InteractionMatrix_I.png" title="Interaction Matrix" /></h2>
 <p>The application program <a href="https://github.com/NonlinearDynamicsDSU/gmn/blob/c770cc0a83df9fb4cc5f1ed7e555192c80d1c592/apps/InteractionMatrix.py"><code>InteractionMatrix.py</code></a> can create interaction matrices using a variety of interaction functions F().</p>
-<p>Avialable functions include :</p>
+<p>Available functions include :</p>
 <table>
 <thead>
 <tr>
@@ -165,7 +165,8 @@
 </tr>
 </tbody>
 </table>
-<h2 id="a-natural-choice-for-the-interaction-function-f-is-convergent-cross-mapping-ccm-since-ccm-validates-that-the-two-variables-are-part-of-the-same-dynamical-system-results-are-stored-in-a-python-pickled-dictionary-of-pandas-dataframes-or-output-as-csv-files-see-the-docstring-in-interactionmatrixpy">A natural choice for the interaction function F() is convergent cross mapping (CCM) since CCM validates that the two variables are part of the same dynamical system. Results are stored in a Python pickled dictionary of pandas dataFrames or output as .csv files. See the docstring in <a href="https://github.com/NonlinearDynamicsDSU/gmn/blob/c770cc0a83df9fb4cc5f1ed7e555192c80d1c592/apps/InteractionMatrix.py"><code>InteractionMatrix.py</code></a>.</h2>
+<p>A natural choice for the interaction function F() is convergent cross mapping (CCM) since CCM validates that the two variables are part of the same dynamical system. Results are stored in a Python pickled dictionary of pandas dataFrames or output as .csv files. See the docstring in <a href="https://github.com/NonlinearDynamicsDSU/gmn/blob/c770cc0a83df9fb4cc5f1ed7e555192c80d1c592/apps/InteractionMatrix.py"><code>InteractionMatrix.py</code></a>.</p>
+<hr />
 <h4 id="network-creation">Network Creation</h4>
 <p>Once an interaction matrix is defined the application program <code>CreateNetwork.py</code> builds the GMN network as a <a href="https://networkx.org/"><code>networkx</code></a> acyclic directed graph (DiGraph). Nodes are added recursively starting at the output node(s) adding links according to the network interaction matrix while disallowing creation of network cycles. The network is stored in a Python dictionary with keys <code>Graph</code> : the networkx DiGraph, and <code>Map</code> : a Python dictionary of node names. </p>
 <p><img alt="alt text" src="../imgs/CreateNetwork_II.png" title="Create Network" /></p>
