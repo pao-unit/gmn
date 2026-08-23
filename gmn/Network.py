@@ -32,7 +32,7 @@ class Network:
         self.Parameters        = parameters
         self.Graph             = None
         self.NetworkMap        = None
-        self.TopologicalSorted = None
+        self.TopologicalSorted = None # Flat node list; also dispatch order
         self.data              = None # All input data subset to dataColumns
         self.dataColumns       = None # time + TopologicalSorted nodes
         self.dataLib_i         = None # indices to subset data "library"
@@ -67,6 +67,13 @@ class Network:
         # Sort for execution order : target node last
         # Note: topological_sort() returns a generator, store in list for reuse
         self.TopologicalSorted = list( topological_sort( self.Graph ) )
+
+        # INVARIANT (licenses flat, barrier-free dispatch in GMN.Generate):
+        # at timestep t every node reads only t-1 outputs (GMN.lastDataOut),
+        # never a same-step sibling's output. Nodes are therefore mutually
+        # independent within a step, so TopologicalSorted doubles as the
+        # flat node list and its order does not affect results. No antichain
+        # layering is needed this iteration. See Schedule.RunStep().
 
         # Load Network data as Pandas DataFrame
         if parameters.networkData and not parameters.networkData.isspace() :

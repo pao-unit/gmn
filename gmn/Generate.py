@@ -18,6 +18,26 @@ def Generate( self, lastDataOut ):
         print( self.data.tail( 2 ) );
         print( 'lastDataOut:' ); print( lastDataOut, flush = True )
 
+    # Kernel fast path : taken BEFORE the growing-DataFrame append, since
+    # eliminating that per-step concat is a main kernel win. Eligible
+    # default-path Simplex nodes advance only their rolling buffer and
+    # project one step ; no pyEDM / pandas / kd-tree per step.
+    if self.KernelLib is not None :
+        from .SimplexKernel import Generate as KernelGenerate
+
+        # Advance the rolling buffer with this node's input columns from
+        # the appended t-1 row ( except on time step 0 ). Index the row
+        # by CACHED integer positions into a plain numpy array : no
+        # pandas / Arrow column selection, which otherwise dominates the
+        # per-step cost at scale ( pyarrow.take, string-index resolve ).
+        if lastDataOut is not None :
+            rowVals = lastDataOut.to_numpy()[ 0 ]
+            newRaw  = rowVals[ self.KernelColPos ]
+            self.KernelLib.Append( newRaw )
+
+        # One kernel step : pred vector -> knn -> projection scalar.
+        return KernelGenerate( self.KernelLib )
+
     # Append new data to end of node data : except on time step 0
     # Do not insert via .loc[] : stackoverflow.com/questions/57000903/
     if not ( lastDataOut is None ):
@@ -46,6 +66,10 @@ def Generate( self, lastDataOut ):
         else:
             pred = "%d %d" % ( data.shape[0] - 1, data.shape[0] )
 
+        # kdWorkers controls scipy KDTree.query threading inside Simplex :
+        # set from backend so outer (node) and inner (query) parallelism do
+        # not oversubscribe. -1 = all cores (serial node loop); 1 = single
+        # (parallel node loop supplies concurrency). See GMN.Generate().
         S = self.Function( dataFrame       = data,
                            lib             = lib,
                            pred            = pred,
@@ -58,7 +82,8 @@ def Generate( self, lastDataOut ):
                            target          = Parameters.target,
                            embedded        = Parameters.embedded,
                            validLib        = Parameters.validLib,
-                           generateSteps   = Parameters.generateSteps )
+                           generateSteps   = Parameters.generateSteps,
+                           kdWorkers       = self.kdWorkers )
 
         val = S['Predictions'].iloc[-1]
 

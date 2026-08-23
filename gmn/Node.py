@@ -3,6 +3,8 @@
 from copy    import copy
 from pathlib import Path
 
+import numpy as np
+
 # Community modules
 from pyEDM import Simplex, SMap, Embed
 
@@ -65,6 +67,12 @@ class Node:
         self.FunctionType = None  # Enumeration
         self.data         = None  # input data (copy or read) + generated
         self.libEnd_i     = None  # EDM library end: Constant @ predictionStart
+        # KDTree.query thread budget for pyEDM Simplex, set from backend:
+        #   serial   -> -1 (query uses all cores; node loop is serial)
+        #   parallel ->  1 (outer thread pool provides concurrency)
+        # Default -1 preserves stock pyEDM behavior if unset.
+        self.kdWorkers    = getattr( args, 'kdWorkers', -1 )
+        self.KernelLib    = None  # float32 kernel library; set by KernelSetup
 
         if args.DEBUG :
             print( '-> Node.__init__() : ', nodeName, flush = True )
@@ -186,3 +194,69 @@ class Node:
             print( 'target:',  self.Parameters.target  )
             print( str( self.FunctionType ), str( self.Function ) ) 
             print( '<- Node.__init__() : ', nodeName, flush = True )
+
+    #------------------------------------------------------------------
+    def KernelSetup( self ):
+        '''Build the float32 kernel library for an eligible node.
+
+        Called once before the time loop when args.kernel is set. Only
+        default-path Simplex nodes ( no user lib / pred, exclusionRadius
+        0, empty validLib ) are eligible ; anything else leaves
+        self.KernelLib None so Generate() falls back to pyEDM. Sets:
+            self.KernelLib : NodeLibrary or None ( None => use pyEDM )
+
+        The library is frozen here from the node's seed data ( through
+        predictionStart ), so the per-step path never re-embeds or
+        rebuilds. Memory is O( N_lib x E x nCols ), constant for the run.
+        '''
+
+        # Imported here to avoid a hard kernel dependency when unused.
+        from .KernelData    import NodeLibrary
+        from .SimplexKernel import KernelEligible
+
+        self.KernelLib = None                 # default : pyEDM fallback
+
+        P = self.Parameters
+
+        # Only default-path Simplex is kernel-eligible.
+        if self.FunctionType.value != FunctionType.Simplex.value :
+            return
+
+        # User-set lib / pred, exclusion, or validLib -> non-default -> defer.
+        if len( P.lib ) and not P.lib.isspace() :
+            return
+        if len( P.pred ) and not P.pred.isspace() :
+            return
+        if P.exclusionRadius and P.exclusionRadius > 0 :
+            return
+        if P.validLib is not None and len( P.validLib ) > 0 :
+            return
+
+        # Assemble the node's raw input columns ( predecessors + self )
+        # and target from the seed data, in the column order Parameters
+        # lists, so the embedding matches pyEDM. columns may be a
+        # space-separated string ( config ) or a list.
+        cols = P.columns
+        if isinstance( cols, str ) :
+            cols = cols.split()
+
+        target = P.target
+
+        rawValues    = self.data[ cols ].to_numpy()
+        targetValues = self.data[ target ].to_numpy()
+
+        lib = NodeLibrary( rawValues, targetValues,
+                           E = P.E, tau = P.tau,
+                           libEnd_i = self.libEnd_i, Tp = P.Tp )
+
+        # Final eligibility ( library large enough for knn ).
+        if KernelEligible( lib, P.exclusionRadius, P.validLib, False ) :
+            self.KernelLib = lib
+
+            # Cache integer positions of this node's input columns within
+            # the network's dataColumns, so the per-step append can index
+            # a plain numpy row by position ( no pandas / Arrow string
+            # lookup, which otherwise dominates at scale ).
+            dataCols = list( self.Network.dataColumns )
+            self.KernelColPos = np.array(
+                [ dataCols.index( c ) for c in cols ], dtype = int )

@@ -94,6 +94,39 @@ def ParseCmdLine( argv = None ):
                         default = 4,
                         help    = 'Multiprocessing cores.')
 
+    parser.add_argument('-b', '--backend',
+                        dest    = 'backend', type = str,
+                        action  = 'store',
+                        default = 'serial',
+                        choices = [ 'parallel', 'serial' ],
+                        help    = 'Node dispatch: serial (default). '
+                                  'parallel flat thread pool is available '
+                                  'but not beneficial for the kernel at '
+                                  'typical per-node costs.')
+
+    parser.add_argument('-ch', '--chunks',
+                        dest    = 'chunks', type = int,
+                        action  = 'store',
+                        default = None,
+                        help    = 'Override dispatch chunk count '
+                                  '(default 4 x cores).')
+
+    parser.add_argument('-kw', '--kdworkers',
+                        dest    = 'kdWorkers', type = int,
+                        action  = 'store',
+                        default = None,
+                        help    = 'Override scipy KDTree.query workers per '
+                                  'node (default: serial -1, parallel 1).')
+
+    parser.add_argument('-K', '--pyedm',
+                        dest    = 'pyedm',
+                        action  = 'store_true',
+                        default = False,
+                        help    = 'Force the pyEDM reference path for all '
+                                  'nodes. Default is the float32 kernel for '
+                                  'eligible default-path nodes ( pyEDM is '
+                                  'used automatically where required ).')
+
     parser.add_argument('-t', '--threads',
                         dest    = 'threads', type = int,
                         action  = 'store',
