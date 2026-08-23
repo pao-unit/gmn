@@ -1,6 +1,6 @@
 ## Generative Manifold Networks (GMN)
 ---
-Generative Manifold Networks is a generalization of nonlinear dynamical systems from a single state-space with a manifold operator, to an interconnected network of operators on the state-space(s) introduced by [Pao et al.](https://arxiv.org/abs/2106.10627)
+Generative Manifold Networks is a generalization of nonlinear dynamical systems from a single state-space with a manifold operator, to an interconnected network of operators on the state-space(s) see: [Park et al.](https://doi.org/10.64898/2026.05.12.724527)
 
 GMN is developed at the [Biological Nonlinear Dynamics Data Science Unit, OIST](https://www.oist.jp/research/research-units/bndd)
 
