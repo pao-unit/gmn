@@ -144,8 +144,16 @@ def Plot( self ):
         dataCol0    = data   [ col0 ].to_numpy()
         gmnDataCol0 = gmnData[ col0 ].to_numpy()
 
-        # plotColumns rows x 3 columns
-        fig, ax = plt.subplots( len( plotColumns ), 3 )
+        # plotColumns rows x 2 or 3 columns
+        # Column 1 : Lib and generated time series
+        # Column 2 : Overlapped lib & generated scatter plot (If overlap)
+        # Column 3 : GMN vs. GMN scatterplot
+        if len(dataCol0[ dataPred_i ]) < 6 :
+            numPlotColumns = 2
+        else :
+            numPlotColumns = 3
+
+        fig, ax = plt.subplots( len( plotColumns ), numPlotColumns )
         fig.set_size_inches( args.FigureSize )
         fig.suptitle( plotTitle + '  N=' + str( len( data ) ) + '  ' +\
                       'lib=' + str( parameters.predictionStart ) )
@@ -173,26 +181,32 @@ def Plot( self ):
             axs[0].legend( loc = 'upper left',
                            borderpad = 0.2, borderaxespad = 0. )
 
-            # Phase-space plot of observed data over the prediction indices
-            axs[1].plot( dataCol1[ dataPred_i ], dataCol0[ dataPred_i ],
-                         'o', markersize = 2,
-                         label = "Lib: " + col0 + " ~ " + col )
-            axs[1].plot( dataCol1[-1], dataCol0[-1],
-                         '*', markersize = 8, color = 'red' )
-            axs[1].legend( loc = 'upper center',
-                           handlelength = 0, markerscale = 0, #frameon = False,
-                           borderpad = 0.2, borderaxespad = 0.2 )
+            if numPlotColumns == 3 :
+                # Phase-space plot of observed data over the prediction indices
+                axs[1].plot( dataCol1[ dataPred_i ], dataCol0[ dataPred_i ],
+                             'o', markersize = 2,
+                             label = "Lib: " + col0 + " ~ " + col )
+                axs[1].plot( dataCol1[-1], dataCol0[-1],
+                             '*', markersize = 8, color = 'red' )
+                axs[1].legend( loc = 'upper center',
+                               handlelength = 0, markerscale = 0,#frameon=False,
+                               borderpad = 0.2, borderaxespad = 0.2 )
+
+            if numPlotColumns == 2 :
+                axs_X = axs[1]
+            else :
+                axs_X = axs[2]
 
             # Phase-space plot of GMN data over the prediction indices
-            axs[2].plot( gmnDataCol1, gmnDataCol0, 'o', markersize = 2,
-                         label = "GMN: " + col0 + " ~ " + col +\
+            axs_X.plot( gmnDataCol1, gmnDataCol0, 'o', markersize = 2,
+                        label = "GMN: " + col0 + " ~ " + col +\
                                  " [" + str( rho ) + "]",
-                         color = 'darkorange')
-            axs[2].plot( gmnDataCol1[-1], gmnDataCol0[-1],
-                         '*', markersize = 8, color = 'red' )
-            axs[2].legend( loc = 'upper center',
-                           handlelength = 0, markerscale = 0, #frameon = False,
-                           borderpad = 0.2, borderaxespad = 0.2 )
+                        color = 'darkorange')
+            axs_X.plot( gmnDataCol1[-1], gmnDataCol0[-1],
+                        '*', markersize = 8, color = 'red' )
+            axs_X.legend( loc = 'upper center',
+                          handlelength = 0, markerscale = 0, #frameon = False,
+                          borderpad = 0.2, borderaxespad = 0.2 )
 
             i_ax = i_ax + 1
 

@@ -11,5 +11,5 @@ from .Node         import *
 from .Parameters   import *
 from .Plot         import *
 
-__version__     = "2.0.1"
-__versionDate__ = "2026-08-20"
+__version__     = "2.0.2"
+__versionDate__ = "2026-08-27"
