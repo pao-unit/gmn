@@ -1,7 +1,7 @@
 [project]
 name          = "gmn"
 description   = "Generative Manifold Networks"
-dynamic       = ["version","versionDate"]
+dynamic       = ["version"]
 readme        = "README.md"
 license-files = ["LICENSE"]
 authors = [
